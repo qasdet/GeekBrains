@@ -1,78 +1,35 @@
 class Matrix:
-    """ Matrix """
-    __data: dict
+    def __init__(self, my_list):
+        self.my_list = my_list
 
-    def __init__(self, *elems, rows=1) -> None:
+    def __str__(self):
+        for row in self.my_list:
+            for i in row:
+                print(f"{i:4}", end="")
+            print()
+        return ''
 
-        # test split elems
+    '''2 варианта реализации __str__'''
 
-        self.__data = {}
+    # def __str__(self):
+    #     return '\n'.join(map(str, self.my_list))
 
-        if len(elems) % rows != 0:
-            raise ValueError("Can't split len(elems) / rows")
+    # def __str__(self):
+    #     return str('\n'.join(['\t'.join([str(el) for el in i]) for i in self.my_list]))
 
-        columns = len(elems) // rows
+    def __add__(self, other):
+        for i in range(len(self.my_list)):
+            for i_2 in range(len(other.my_list[i])):
+                self.my_list[i][i_2] = self.my_list[i][i_2] + other.my_list[i][i_2]
+        return Matrix.__str__(self)
 
-        if len(elems) > 0:
-            self.__data["size"] = (rows, columns)
 
-        for column in range(rows):
-            for row in range(columns):
-                self.__data[(row, column)] = elems[column + row * rows]
 
-    def get_size(self) -> tuple:
-        """ return size of matrix (rows, columns) """
-        return self.__data.get("size", (0, 0))
 
-    def get_elem(self, row_index, column_index):
-        """ return elems of pos(row, column) """
+m1 = Matrix([[11,2,3],[4,5,6],[117,8,9]])
+m2 = Matrix([[1,1,1],[1,1,1],[1,1,1]])
+#print(m1)
+print(m1)
 
-        value = self.__data[(row_index, column_index)]
-
-        if value is not None:
-            return value
-
-        raise ValueError(f"Unknow index {(row_index, column_index)}")
-
-    def __arifm_func(self, func, other: 'Matrix') -> list:
-
-        (rows, columns) = self.get_size()
-
-        return [func(self.get_elem(x, y),  other.get_elem(x, y))
-                for y in range(rows) for x in range(columns)]
-
-    def __add__(self, other: 'Matrix') -> 'Matrix':
-        """ operator + for matrix. return a new matrix """
-        if self.get_size() != other.get_size():
-            raise ValueError("Matrix's sizies must be eq")
-
-        return Matrix(self.__arifm_func(lambda x, y: x + y, other), rows=self.get_size()[0])
-
-    def __sub__(self, other: 'Matrix') -> 'Matrix':
-        """ operator - for matrix. return a new matrix """
-
-        if self.get_size() != other.get_size():
-            raise ValueError("Matrix's sizies must be eq")
-
-        return Matrix(self.__arifm_func(lambda x, y: x - y, other), rows=self.get_size()[0])
-
-    def __str__(self) -> str:
-
-        (rows, columns) = self.get_size()
-
-        if rows * columns == 0:
-            return "Empty Matrix"
-
-        output = ""
-        for j, row in enumerate(range(rows)):
-
-            for i, column in enumerate(range(columns)):
-                output += f"{self.get_elem(column, row)}"
-
-                if i != columns - 1:
-                    output += " "
-
-            if j != rows - 1:
-                output += "\n"
-
-        return output
+m3 = m1 + m2
+print(m3)
